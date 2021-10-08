@@ -6,4 +6,15 @@
       checkbox.parentNode.submit();
     });
   });
+
+  const deletes = document.querySelectorAll(".delete");
+  deletes.forEach((span) => {
+    span.addEventListener("click", () => {
+      if (!confirm("Are you sure?")) {
+        return;
+      }
+      console.log(span.parentNode);
+      span.parentNode.submit();
+    });
+  });
 }
