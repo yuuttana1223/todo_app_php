@@ -5,6 +5,9 @@ declare(strict_types=1);
 const DSN = "mysql:host=db;dbname=myapp;charset=utf8mb4";
 const DB_USER = "myappuser";
 const DB_PASS = "myapppass";
+// const SITE_URL = "http://localhost:8562";
+// constだと変数は使えないからエラーが出る
+define("SITE_URL", "http://{$_SERVER["HTTP_HOST"]}");
 
 try {
   $pdo = new PDO(
@@ -48,6 +51,9 @@ function getTodos(PDO $pdo): array
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
   addTodo($pdo);
+
+  header("Location: {SITE_URL}");
+  exit;
 }
 
 
