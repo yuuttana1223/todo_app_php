@@ -1,67 +1,29 @@
 <?php
 
 // require_once("../app/config.php");
+// 絶対パス推奨
 require_once(__DIR__ . "/../app/config.php");
-print_r(__DIR__);
 
 createToken();
 
-try {
-  $pdo = new PDO(
-    DSN,
-    DB_USER,
-    DB_PASS,
-    [
-      PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-      PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
-      PDO::ATTR_EMULATE_PREPARES => false,
-    ]
-  );
-} catch (PDOException $e) {
-  echo $e->getMessage();
-  exit;
-}
-
-function h(string $str): string
-{
-  return htmlspecialchars($str, ENT_QUOTES, "UTF-8");
-}
-
-function createToken(): void
-{
-  if (!isset($_SESSION["token"])) {
-    $_SESSION["token"] = bin2hex(random_bytes(32));
-  }
-}
-
-function validateToken(): void
-{
-  if (empty($_SESSION["token"]) || $_SESSION["token"] !== filter_input(INPUT_POST, "token")) {
-    exit("Invalid post request");
-  }
-}
-
-function addTodo(PDO $pdo): void
-{
-  $title = trim(filter_input(INPUT_POST, "title"));
-  if ($title === "") {
-    return;
-  }
-
-  $stmt = $pdo->prepare("INSERT INTO todos (title) VALUES (:title)");
-  $stmt->bindValue("title", $title, PDO::PARAM_STR);
-  $stmt->execute();
-}
-
-function getTodos(PDO $pdo): array
-{
-  $stmt = $pdo->query("SELECT * FROM todos ORDER BY id DESC");
-  $todos = $stmt->fetchAll();
-  return $todos;
-}
+$pdo = getPdoInstance();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
   validateToken();
+
+  $action = filter_input(INPUT_GET, "action");
+
+  switch ($action) {
+    case "add":
+      addTodo($pdo);
+      break;
+    case "toggle":
+      toggleTodo($pdo);
+      break;
+    default:
+      break;
+  }
+
   addTodo($pdo);
 
   header("Location: {SITE_URL}");
@@ -83,18 +45,23 @@ $todos = getTodos($pdo);
 
 <body>
   <h1>Todos</h1>
-  <form action="" method="post">
+  <form action="?action=add" method="post">
     <input type="text" name="title" placeholder="Type new todo. ">
     <input type="hidden" name="token" value="<?= h($_SESSION["token"]) ?>">
   </form>
   <ul>
     <?php foreach ($todos as $todo) : ?>
       <li>
-        <input type="checkbox" <?= $todo->is_done ? "checked" : ""; ?>>
+        <form action="?action=toggle" method="post">
+          <input type="checkbox" <?= $todo->is_done ? "checked" : ""; ?>>
+          <input type="hidden" name="id" value="<?= h($todo->id) ?>">
+          <input type="hidden" name="token" value="<?= h($_SESSION["token"]) ?>">
+        </form>
         <span class=<?= $todo->is_done ? "done" : ""; ?>><?= h($todo->title); ?></span>
       </li>
     <?php endforeach; ?>
   </ul>
+  <script src="js/main.js"></script>
 </body>
 
 </html>
