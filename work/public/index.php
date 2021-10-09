@@ -27,9 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
       exit;
   }
 
-  addTodo($pdo);
-
-  header("Location: {SITE_URL}");
+  header("Location: " . SITE_URL);
   exit;
 }
 
