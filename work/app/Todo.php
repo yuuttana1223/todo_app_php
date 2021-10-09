@@ -28,7 +28,9 @@ class Todo
           echo json_encode(["id" => $id]);
           break;
         case "toggle":
-          $this->toggle();
+          $isDone = $this->toggle();
+          header("Content-Type: application/json");
+          echo json_encode(["isDone" => $isDone]);
           break;
         case "delete":
           $this->delete();
@@ -57,11 +59,11 @@ class Todo
     return (int) $this->pdo->lastInsertId();
   }
 
-  private function toggle(): void
+  private function toggle(): bool
   {
     $id = filter_input(INPUT_POST, "id");
     if (empty($id)) {
-      return;
+      return false;
     }
     $stmt = $this->pdo->prepare("SELECT * FROM todos WHERE id = :id");
     $stmt->bindValue("id", $id, PDO::PARAM_INT);
@@ -76,6 +78,8 @@ class Todo
     $stmt = $this->pdo->prepare("UPDATE todos SET is_done = NOT is_done WHERE id = :id");
     $stmt->bindValue("id", $id, PDO::PARAM_INT);
     $stmt->execute();
+    // mysqlの真偽値は0, 1で管理されているため
+    return (bool) !$todo->is_done;
   }
 
   private function delete(): void

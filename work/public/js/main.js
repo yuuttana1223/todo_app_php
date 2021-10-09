@@ -17,6 +17,13 @@
           if (!res.ok) {
             throw new Error();
           }
+          return res.json();
+        })
+        .then(({ isDone }) => {
+          if (isDone !== e.target.checked) {
+            alert("this Todo has been updated. UI is being updated.");
+            e.target.checked = isDone;
+          }
         })
         .catch((error) => {
           alert(error.message);
@@ -74,8 +81,8 @@
       }),
     })
       .then((res) => res.json())
-      .then((json) => {
-        addTodo(json.id, title);
+      .then(({ id }) => {
+        addTodo(id, title);
       });
 
     // addTodoよりも先に行われる(非同期)。
