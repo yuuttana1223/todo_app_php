@@ -1,16 +1,14 @@
 "use strict";
 {
+  const token = document.querySelector("main").dataset.token;
+
   const checkboxes = document.querySelectorAll("input[type='checkbox']");
   checkboxes.forEach((checkbox) => {
     checkbox.addEventListener("change", () => {
-      const {
-        dataset: { id, token },
-      } = checkbox;
-
       fetch("?action=toggle", {
         method: "POST",
         body: new URLSearchParams({
-          id: id,
+          id: checkbox.dataset.id,
           token: token,
         }),
       });
@@ -23,14 +21,11 @@
       if (!confirm("Are you sure?")) {
         return;
       }
-      const {
-        dataset: { id, token },
-      } = span;
 
       fetch("?action=delete", {
         method: "POST",
         body: new URLSearchParams({
-          id: id,
+          id: span.dataset.id,
           token: token,
         }),
       });
@@ -44,9 +39,6 @@
     if (!confirm("Are you sure?")) {
       return;
     }
-    const {
-      dataset: { token },
-    } = purge;
 
     fetch("?action=purge", {
       method: "POST",
