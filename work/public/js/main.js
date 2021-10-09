@@ -6,6 +6,7 @@
       const {
         dataset: { id, token },
       } = checkbox;
+
       fetch("?action=toggle", {
         method: "POST",
         body: new URLSearchParams({
@@ -25,6 +26,7 @@
       const {
         dataset: { id, token },
       } = span;
+
       fetch("?action=delete", {
         method: "POST",
         body: new URLSearchParams({
@@ -42,6 +44,22 @@
     if (!confirm("Are you sure?")) {
       return;
     }
-    purge.parentNode.submit();
+    const {
+      dataset: { token },
+    } = purge;
+
+    fetch("?action=purge", {
+      method: "POST",
+      body: new URLSearchParams({
+        token: token,
+      }),
+    });
+
+    const listItems = document.querySelectorAll("li");
+    listItems.forEach((listItem) => {
+      if (listItem.firstElementChild.checked) {
+        listItem.remove();
+      }
+    });
   });
 }
