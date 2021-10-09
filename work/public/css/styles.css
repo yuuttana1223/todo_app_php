@@ -36,7 +36,8 @@ li {
   margin-bottom: 8px;
 }
 
-.done {
+/* checkした次の要素 */
+input[type="checkbox"]:checked + span {
   text-decoration: line-through;
   color: #ccc;
 }
