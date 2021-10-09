@@ -1,23 +1,21 @@
 "use strict";
 {
   const token = document.querySelector("main").dataset.token;
+  const input = document.querySelector("[name='title']");
+  const ul = document.querySelector("ul");
 
-  const checkboxes = document.querySelectorAll("input[type='checkbox']");
-  checkboxes.forEach((checkbox) => {
-    checkbox.addEventListener("change", () => {
+  ul.addEventListener("click", (e) => {
+    if (e.target.type === "checkbox") {
       fetch("?action=toggle", {
         method: "POST",
         body: new URLSearchParams({
-          id: checkbox.parentNode.dataset.id,
+          id: e.target.parentNode.dataset.id,
           token: token,
         }),
       });
-    });
-  });
+    }
 
-  const deletes = document.querySelectorAll(".delete");
-  deletes.forEach((span) => {
-    span.addEventListener("click", () => {
+    if (e.target.classList.contains("delete")) {
       if (!confirm("Are you sure?")) {
         return;
       }
@@ -25,13 +23,55 @@
       fetch("?action=delete", {
         method: "POST",
         body: new URLSearchParams({
-          id: span.parentNode.dataset.id,
+          id: e.target.parentNode.dataset.id,
           token: token,
         }),
       });
 
-      span.parentNode.remove();
-    });
+      e.target.parentNode.remove();
+    }
+  });
+
+  input.focus();
+
+  const addTodo = (id, titleValue) => {
+    const li = document.createElement("li");
+    li.dataset.id = id;
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    const title = document.createElement("span");
+    title.textContent = titleValue;
+    const deleteSpan = document.createElement("span");
+    deleteSpan.textContent = "削除";
+    deleteSpan.className = "delete";
+
+    li.appendChild(checkbox);
+    li.appendChild(title);
+    li.appendChild(deleteSpan);
+
+    const ul = document.querySelector("ul");
+    ul.insertBefore(li, ul.firstChild);
+  };
+
+  document.querySelector("form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const title = input.value;
+
+    fetch("?action=add", {
+      method: "POST",
+      body: new URLSearchParams({
+        title: title,
+        token: token,
+      }),
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        addTodo(json.id, title);
+      });
+
+    // addTodoよりも先に行われる(非同期)。
+    input.value = "";
+    input.focus();
   });
 
   const purge = document.querySelector(".purge");
