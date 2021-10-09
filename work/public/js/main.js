@@ -3,7 +3,18 @@
   const checkboxes = document.querySelectorAll("input[type='checkbox']");
   checkboxes.forEach((checkbox) => {
     checkbox.addEventListener("change", () => {
-      checkbox.parentNode.submit();
+      const {
+        dataset: { id, token },
+      } = checkbox;
+      fetch("?action=toggle", {
+        method: "POST",
+        body: new URLSearchParams({
+          id: id,
+          token: token,
+        }),
+      });
+
+      checkbox.nextElementSibling.classList.toggle("done");
     });
   });
 
