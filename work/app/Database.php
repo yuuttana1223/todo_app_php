@@ -1,5 +1,9 @@
 <?php
 
+namespace MyApp;
+
+use PDO, PDOException;
+
 class Database
 {
   private static $instance;

@@ -1,5 +1,9 @@
 <?php
 
+namespace MyApp;
+
+use PDO;
+
 class Todo
 {
   private $pdo;

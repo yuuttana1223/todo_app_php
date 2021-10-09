@@ -4,6 +4,7 @@
 // 絶対パス推奨
 require_once(__DIR__ . "/../app/config.php");
 
+use MyApp\Database, MyApp\Todo, MyApp\Utils;
 
 $pdo = Database::getInstance();
 
