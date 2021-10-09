@@ -4,12 +4,12 @@
 // 絶対パス推奨
 require_once(__DIR__ . "/../app/config.php");
 
-createToken();
+Token::create();
 
-$pdo = getPdoInstance();
+$pdo = Database::getInstance();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-  validateToken();
+  Token::validate();
 
   $action = filter_input(INPUT_GET, "action");
 
