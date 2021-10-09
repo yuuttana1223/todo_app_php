@@ -63,6 +63,16 @@ class Todo
     if (empty($id)) {
       return;
     }
+    $stmt = $this->pdo->prepare("SELECT * FROM todos WHERE id = :id");
+    $stmt->bindValue("id", $id, PDO::PARAM_INT);
+    $stmt->execute();
+    $todo = $stmt->fetch();
+    if (empty($todo)) {
+      // header("HTTP/1.1 404 Not Found");
+      header("HTTP", true, 404); // HTTP status code
+      exit;
+    }
+
     $stmt = $this->pdo->prepare("UPDATE todos SET is_done = NOT is_done WHERE id = :id");
     $stmt->bindValue("id", $id, PDO::PARAM_INT);
     $stmt->execute();

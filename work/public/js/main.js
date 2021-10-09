@@ -10,9 +10,18 @@
         method: "POST",
         body: new URLSearchParams({
           id: e.target.parentNode.dataset.id,
-          token: token,
+          token,
         }),
-      });
+      })
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error();
+          }
+        })
+        .catch((error) => {
+          alert(error.message);
+          location.reload();
+        });
     }
 
     if (e.target.classList.contains("delete")) {
@@ -24,7 +33,7 @@
         method: "POST",
         body: new URLSearchParams({
           id: e.target.parentNode.dataset.id,
-          token: token,
+          token,
         }),
       });
 
@@ -60,8 +69,8 @@
     fetch("?action=add", {
       method: "POST",
       body: new URLSearchParams({
-        title: title,
-        token: token,
+        title,
+        token,
       }),
     })
       .then((res) => res.json())
@@ -83,7 +92,7 @@
     fetch("?action=purge", {
       method: "POST",
       body: new URLSearchParams({
-        token: token,
+        token,
       }),
     });
 
