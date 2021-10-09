@@ -42,11 +42,9 @@ $todos = $todo->getAll();
           <input type="checkbox" data-id="<?= Utils::h($todo->id) ?>" data-token="<?= Utils::h($_SESSION["token"]) ?>" <?= $todo->is_done ? "checked" : ""; ?>>
           <span><?= Utils::h($todo->title); ?></span>
 
-          <form action="?action=delete" method="post" class="delete-form">
-            <span class="delete">削除</span>
-            <input type="hidden" name="id" value="<?= Utils::h($todo->id) ?>">
-            <input type="hidden" name="token" value="<?= Utils::h($_SESSION["token"]) ?>">
-          </form>
+          <span data-id="<?= Utils::h($todo->id) ?>" data-token="<?= Utils::h($_SESSION["token"]) ?>" class="delete">削除</span>
+          <input type="hidden" name="id" value="<?= Utils::h($todo->id) ?>">
+          <input type="hidden" name="token" value="<?= Utils::h($_SESSION["token"]) ?>">
         </li>
       <?php endforeach; ?>
     </ul>

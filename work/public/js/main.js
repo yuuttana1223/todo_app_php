@@ -13,8 +13,6 @@
           token: token,
         }),
       });
-
-      checkbox.nextElementSibling.classList.toggle("done");
     });
   });
 
@@ -24,8 +22,18 @@
       if (!confirm("Are you sure?")) {
         return;
       }
-      console.log(span.parentNode);
-      span.parentNode.submit();
+      const {
+        dataset: { id, token },
+      } = span;
+      fetch("?action=delete", {
+        method: "POST",
+        body: new URLSearchParams({
+          id: id,
+          token: token,
+        }),
+      });
+
+      span.parentNode.remove();
     });
   });
 
